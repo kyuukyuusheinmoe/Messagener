@@ -15,7 +15,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   handleConnection(client: any, ...args: any[]) {
     const { sockets } = this.io.sockets;
-
     this.logger.log(`Client id : ${client.id} connected`)
     this.logger.debug(`Number of connected Clients : ${sockets.size}`)
 
@@ -25,10 +24,10 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.logger.log(`Client id: ${client.id} disconnected`)
   }
 
-  @SubscribeMessage('ping')
-  handleMessage(client: any, payload: any): object {
+  @SubscribeMessage('message')
+  handleMessage(client: any, payload: any): string {
     this.logger.log(`Message received from client id: ${client.id}`)
-    this.logger.debug(`Payload ${payload}`)
-    return { event: "pong", data: "Wrong data that will make the test fail" };
+    this.logger.debug(`Payload`, payload)
+    return "Message received";
   }
 }
