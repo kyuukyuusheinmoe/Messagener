@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from "socket.io"
+import { rabbitMQClient } from 'rabbitmq.config';
 
 
 @WebSocketGateway()
@@ -25,9 +26,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
+  async handleMessage(client: any, payload: any): Promise<string> {
     this.logger.log(`Message received from client id: ${client.id}`)
     this.logger.debug(`Payload`, payload)
-    return "Message received";
+    // Send message to RabbitMQ
+    await rabbitMQClient.emit('message', payload).toPromise();
+    return "Message received and queued";
   }
 }
