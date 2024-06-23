@@ -18,7 +18,6 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const { sockets } = this.io.sockets;
     this.logger.log(`Client id : ${client.id} connected`)
     this.logger.debug(`Number of connected Clients : ${sockets.size}`)
-
   }
 
   handleDisconnect(client: any) {
@@ -32,5 +31,11 @@ export class ChatGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     // Send message to RabbitMQ
     await rabbitMQClient.emit('message', payload).toPromise();
     return "Message received and queued";
+  }
+
+  // Broadcast a message to all clients
+  broadcastMessage(message: string): void {
+    this.logger.log(`broadcasting Message`)
+    this.io.emit('message', message);
   }
 }

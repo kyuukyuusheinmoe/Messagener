@@ -7,9 +7,9 @@ import { ConfigService, ConfigModule } from "@nestjs/config";
         ConfigModule.forRoot({ isGlobal: true, }),
         ClientsModule.registerAsync([
             {
+                name: 'CHAT_SERVICE',
                 imports: [ConfigModule],
                 inject: [ConfigService],
-                name: 'CHAT_SERVICE',
                 useFactory: (configService: ConfigService) => ({
                     transport: Transport.RMQ,
                     options: {
